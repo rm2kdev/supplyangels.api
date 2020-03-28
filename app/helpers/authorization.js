@@ -17,8 +17,8 @@ module.exports = (scope) => {
                             UserModel.findOne({ email }, (error, data) => {
                                 if(error) res.status(401).json({ message: 'unauthorized access', successful: false })
                                 else {
-                                    const { _id } = data
-                                    req.user = { _id }
+                                    // const { _id } = data
+                                    req.user = data
                                     next()
                                 }
                             })

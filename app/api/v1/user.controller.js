@@ -16,11 +16,11 @@ module.exports = function(){
     })
 
     this.post(baseRoute + '/login', (req, res) => {
-        return new Promise((resolve, reject) => {
+        //return new Promise((resolve, reject) => {
             UserService.login(req.body)
-                .then(data => resolve(res.json(Response.Success.Custom('successfully logged in user.', { token: data }))))
-                .catch(error => { reject(Response.Error.Custom(res, error)) })
-        })
+                .then(data => res.json(Response.Success.Custom('successfully logged in user.', { token: data })))
+                .catch(error => { Response.Error.Custom(res, error)} )
+        //})
     })
 
     this.get(baseRoute + '/verify/:id', (req, res) => {
@@ -30,6 +30,11 @@ module.exports = function(){
                 .then(token => resolve(res.json(Response.Success.Custom('Successfully verified email.', token))))
                 .catch(error => reject(Response.Error.Custom(res, error)))
         })
+    })
+
+    this.get(baseRoute + '/checktoken', authorization('user'), (req, res) => {
+        const { _id } = req.user;
+        res.json(Response.Success.Custom("token is valid"));
     })
 
     this.get(baseRoute, authorization('user'), (req, res) => {

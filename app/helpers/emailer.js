@@ -38,7 +38,9 @@ sendEmailAWS = ({ to, subject, message }) => {
 
     new AWS.SES(SESConfig).sendEmail(params).promise().then((res) => {
         console.log(res)
-    })
+    }).catch( error => {
+        console.log(error)
+      })
 }
 
 module.exports = EmailHelper = {
@@ -49,7 +51,7 @@ module.exports = EmailHelper = {
                 const { to, subject } = mailOptions
 
                 let rendered = Mustache.render(data, object)
-                console.log(rendered)
+                // console.log(rendered)
                 switch (Configuration.MAILING_TYPE.toString().toLowerCase()) {
                     case 'aws':
                         sendEmailAWS({ to, subject, message: rendered})

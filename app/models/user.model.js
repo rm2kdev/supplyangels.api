@@ -6,24 +6,34 @@ const userSchema = new Schema({
         required: (true, 'Email is required.'),
         unique: (true, 'Email already exists.')
     },
-    userName: {
-        type: String,
-        required: (true, 'User name is required.'),
-        unique: (true, 'User name is already taken.')
-    },
     password: {
         type: String,
         required: (true, 'Password is required.')
     },
-    isVerified: {
-        type: Boolean,
-        default: false
+
+    profile: {
+        tipPaypalAddress: String,
+        enteredAddress: String,
+
+        addressDetails: {},
+        location: {
+          type: {
+            type: String,
+            enum: ['Point'],
+            required: true
+          },
+          coordinates: {
+            type: [Number],
+            required: true
+          }
+        }
+
     },
     metadata: {
         verificationToken: {
             type: String
         },
-        hasProfile: {
+        isVerified: {
             type: Boolean,
             default: false
         },
@@ -32,4 +42,23 @@ const userSchema = new Schema({
     }
 })
 
-module.exports = UserModel = fllairdb.model('user', userSchema);
+module.exports = UserModel = supdb.model('user', userSchema);
+
+// example geo query
+// {
+//   "profile.location" : {
+//   "$near" : {
+//     "$geometry" : {
+//       "type" : "Point",
+//         "coordinates" : [
+//         115.8551746,
+//         -31.863347
+//
+//
+//       ]
+//     },
+//     "$minDistance" : 0,
+//       "$maxDistance" : 5000.0
+//   }
+// }
+// }

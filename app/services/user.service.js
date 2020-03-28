@@ -11,9 +11,9 @@ encryptPassword = (password) => {
     })
 }
 
-comparePassword = (password, user) => {
+comparePassword = (user, inputpassword) => {
     return new Promise((resolve, reject) => {
-        bcrypt.compare(password, user.password)
+        bcrypt.compare(inputpassword, user.password)
             .then(res => {
                 if(res)
                     resolve(user)
@@ -54,14 +54,36 @@ verifyUser = (user) => {
 module.exports = UserService = {
     signup: (data) => {
         return new Promise((resolve, reject) => {
-            const { email, password, confirmPassword, userName } = data
+            const { email, password, passwordConfirm, enteredAddress, selectedAddress } = data
 
-            if(!regex.email.test(email)) reject('Email is not valid')
-            if(password != confirmPassword)
-                reject(`Password and Confirm Password doesn't match.`)
+            if(!regex.email.test(email)) {
+              reject('Email is not valid')
+              return;
+            }
+            if(password != passwordConfirm){
+              reject(`Password and Confirm Password doesn't match.`)
+              return;
+            }
+
 
             encryptPassword(password)
-                .then(encryptedPassword => { return UserModel.create({ email, userName, password: encryptedPassword, metadata: { verificationToken: uuid.v4(), dateCreated: new Date() } })})
+                .then(encryptedPassword => {
+                  return UserModel.create({
+                    email: email,
+                    password: encryptedPassword,
+                    profile: {
+                      tipPaypalAddress: "",
+                      enteredAddress: enteredAddress,
+
+                      addressDetails: selectedAddress.address,
+                      location:{
+                        type: 'Point',
+                        coordinates: [selectedAddress.lon, selectedAddress.lat]
+                      }
+                    },
+                    metadata: { verificationToken: uuid.v4(), dateCreated: new Date() }
+                  })
+                })
                 .then(data =>{
 
                     EmailHelper.sendEmail('email.verification.template', { link: Configuration.CLIENT_URL + `/auth/verify/${data.metadata.verificationToken}`},{
@@ -75,17 +97,15 @@ module.exports = UserService = {
 
         })
     },
-    login: (data) => {
+    login: (inputUser) => {
         return new Promise((resolve, reject) => {
             try {
-                const { userName, password } = data
 
-
-                UserModel.findOne({ $or: [ { email: userName }, { userName: userName }]})
-                    .then(data => {
-                        if (!data) reject('User name or Password is incorrect.')
-                        if (!data.isVerified) reject('Your email is still unverified.')
-                        return comparePassword(password, data)
+                UserModel.findOne({email: inputUser.email})
+                    .then(user => {
+                        if (!user) reject('User name or Password is incorrect.')
+                        if (!user.metadata.isVerified) reject('Your email is still unverified.')
+                        return comparePassword(user, inputUser.password)
                     })
                     .then(user => { return generateToken(user) })
                     .then(token => resolve(token))
