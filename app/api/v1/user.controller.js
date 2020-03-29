@@ -32,12 +32,12 @@ module.exports = function(){
         })
     })
 
-    this.get(baseRoute + '/checktoken', authorization('user'), (req, res) => {
+    this.get(baseRoute + '/checktoken', authorization.secure('user'), (req, res) => {
         const { _id } = req.user;
         res.json(Response.Success.Custom("token is valid"));
     })
 
-    this.get(baseRoute, authorization('user'), (req, res) => {
+    this.get(baseRoute, authorization.open('user'), (req, res) => {
         return new Promise((resolve, reject) => {
             const { _id } = req.user
             UserService.getUserById(_id)

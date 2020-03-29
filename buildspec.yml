@@ -4,7 +4,7 @@ phases:
   install:
     commands:
       - echo install phase
-      - echo Building for ENV ${ENVIRONMENT}
+#      - echo Building for ENV ${ENVIRONMENT}
 #      - echo ${MONGODB_URL}
 #      - echo ${JWT_KEY}
 #      - echo ${ECR_REPO_LOCATION}

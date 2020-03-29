@@ -39,10 +39,10 @@ verifyUser = (user) => {
     return new Promise((resolve, reject) => {
         UserModel.updateOne({ _id: user._id }, {
             $set: {
-                isVerified: true,
                 metadata: {
                     ...user.metadata,
-                    dateUpdated: new Date()
+                  isVerified: true,
+                  dateUpdated: new Date()
                 }
             }
         })
