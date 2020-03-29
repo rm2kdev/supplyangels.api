@@ -67,6 +67,8 @@ module.exports = RequestService = {
   getspecificrequest: (request) => {
     return new Promise((resolve, reject) => {
       RequestModel.findOne({"_id": request._id, "metadata.isActive" : true})
+        // .populate('metadata.owner', 'profile.enteredAddress', 'profile.location')
+        .populate('metadata.owner')
         .then((existingRequest) => {
           if(existingRequest){
             //if !existingrequest.isInProgress
