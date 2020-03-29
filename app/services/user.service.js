@@ -54,7 +54,7 @@ verifyUser = (user) => {
 module.exports = UserService = {
     signup: (data) => {
         return new Promise((resolve, reject) => {
-            const { email, password, passwordConfirm, enteredAddress, selectedAddress } = data
+            const { email, paypal, password, passwordConfirm, enteredAddress, selectedAddress } = data
 
             if(!regex.email.test(email)) {
               reject('Email is not valid')
@@ -72,7 +72,7 @@ module.exports = UserService = {
                     email: email,
                     password: encryptedPassword,
                     profile: {
-                      tipPaypalAddress: "",
+                      tipPaypalAddress: paypal,
                       enteredAddress: enteredAddress,
 
                       addressDetails: selectedAddress.address,
@@ -105,6 +105,7 @@ module.exports = UserService = {
                     .then(user => {
                         if (!user) reject('User name or Password is incorrect.')
                         if (!user.metadata.isVerified) reject('Your email is still unverified.')
+                        if (user.metadata.isBanned) reject('Your account has been restricted');
                         return comparePassword(user, inputUser.password)
                     })
                     .then(user => { return generateToken(user) })

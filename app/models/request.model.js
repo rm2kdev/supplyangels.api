@@ -29,6 +29,12 @@ const requestSchema = new Schema({
     metadata: {
       owner: {type: Schema.Types.ObjectId, ref: 'user'},
       isActive: Boolean,
+
+      inProgress: Boolean,
+      commitmentBy: {type: Schema.Types.ObjectId, ref: 'user'},
+      commitmentDate: Date,
+      competedDate: Date,
+
       dateCreated: Date,
       dateUpdated: Date
     }

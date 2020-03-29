@@ -34,8 +34,12 @@ const userSchema = new Schema({
             type: String
         },
         isVerified: {
-            type: Boolean,
-            default: false
+          type: Boolean,
+          default: false
+        },
+        isBanned: {
+          type: Boolean,
+          default: false
         },
         dateCreated: Date,
         dateUpdated: Date

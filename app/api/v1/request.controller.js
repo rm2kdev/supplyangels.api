@@ -34,4 +34,23 @@ module.exports = function(){
       .then(request => res.json(Response.Success.Custom('successfully got nearby requests.', request)))
       .catch(error => Response.Error.Custom(res, error))
   });
+
+  this.post(baseRoute + '/commit', authorization.secure('request'), (req, res) => {
+    RequestService.committorequest(req.user, req.body)
+      .then(request => res.json(Response.Success.Custom('successfully got request.', request)))
+      .catch(error => Response.Error.Custom(res, error))
+  });
+
+  this.get(baseRoute + '/getmycommitments', authorization.secure('request'), (req, res) => {
+    RequestService.getmycommitments(req.user)
+      .then(request => res.json(Response.Success.Custom('successfully got your commitments.', request)))
+      .catch(error => Response.Error.Custom(res, error))
+  });
+
+  this.post(baseRoute + '/commit/complete', authorization.secure('request'), (req, res) => {
+    RequestService.completecommitment(req.user, req.body)
+      .then(request => res.json(Response.Success.Custom('successfully got your commitments.', request)))
+      .catch(error => Response.Error.Custom(res, error))
+  });
+
 }
