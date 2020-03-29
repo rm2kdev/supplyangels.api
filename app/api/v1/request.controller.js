@@ -23,6 +23,12 @@ module.exports = function(){
       .catch(error => Response.Error.Custom(res, error))
   });
 
+  this.post(baseRoute + '/getspecific', authorization.secure('request'), (req, res) => {
+    RequestService.getspecificrequest(req.body)
+      .then(request => res.json(Response.Success.Custom('successfully got request.', request)))
+      .catch(error => Response.Error.Custom(res, error))
+  });
+
   this.get(baseRoute + '/listnearby', authorization.open('request'), (req, res) => {
     RequestService.listnearbyrequests(req.user)
       .then(request => res.json(Response.Success.Custom('successfully got nearby requests.', request)))

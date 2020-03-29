@@ -64,6 +64,23 @@ module.exports = RequestService = {
     })
   },
 
+  getspecificrequest: (request) => {
+    return new Promise((resolve, reject) => {
+      RequestModel.findOne({"_id": request._id, "metadata.isActive" : true})
+        .then((existingRequest) => {
+          if(existingRequest){
+            //if !existingrequest.isInProgress
+            resolve(existingRequest)
+            //else
+            //reject("Someone else has offered to help this request")
+          }else{
+            reject("This request is no longer active.")
+          }
+        })
+        .catch(error => reject(error))
+    })
+  },
+
   listnearbyrequests: (user) => {
     return new Promise((resolve, reject) => {
       let geoQuery = {
